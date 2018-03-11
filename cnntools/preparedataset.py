@@ -1,30 +1,70 @@
 """
-Load training and test pairs.
+Prepare training and testing data-pairs for use with CNN.
 
-Usage:
-    From command line to produce numpy files:
-    preparedataset.py 'in_prefix' 'target_prefix' percent_of_train rescale_factor
-    - percent_of_train can be 0
-    - images are not scaled if rescale factor is 1.0
+The purpose of :class:`PrepareDataSets` is to randomly split specified dataset into two exclusive subsets containing
+training pairs and testing pairs. The input and output image within each pair is defined by common **core_name** and
+different **suffix**, e.g.:
 
-    From API
-    Use load_train_data and load_test_data to load previously saved numpy arrays (saves time)
+- **file_1.png** - can be input image
+- **file_2.png** - can be output image
+- **file_3.png** - can be other input
 
-    split_random - splits dataset (input-output pairs) from raw_path folder to test_path folder and train_path
-    create_train_data - scan train_path and create separate numpy arrays from input and output images
-    create_test_data - scan test_path and create separate numpy arrays from input and output images
+In above example *_1.png* and *_2.png* stand for unique suffixes used for specifying input and output image in pair. This
+module expects certain folder structure under *root* folder. The *root* has to be specified by user on creation of
+:class:`PrepareDataSets` object. Expected structure is as follows:
 
-    _load_images_from_folder - loads images according to suffix from specified folder
-    _load_training_pairs - same as above but scan for input and output images
+* *root*
+    * *raw* - contain all available training data, not necessarily training pairs. Crucial is uniform file naming.
+    * *train* - here randomly selected training pairs from *raw* wil be copied by :class:`PrepareDataSets`
+    * *test* - here randomly selected testing pairs will be copied by :class:`PrepareDataSets`
 
-    Module expects folder structure:
-    training-data
-        raw
-        train
-        test
+At the end module produces *.npy* files in *root* folder with content of *train* and *test* folders (for sake of speed
+up of loading). Input and output images are saved to separate files (in total 4 files are created, each two for train
+and testing datasets)
 
-    Output files are saved in training-data
+Warning:
+    1. *train* and *test* folders are deleted on each run of module.
+    2. Images are sored in *npy* files without processing in [sample height width] arrays.
 
+Example:
+    The module can be called from :func:__main__ or from API. Calling from command line can look like follows:
+
+    .. code-block:: sh
+
+        python preparedataset.py 'in_suffix' 'target_suffix' percent_of_train rescale_factor
+
+    Where:
+        * in_suffix - is suffix of images in *raw* folder used as inputs
+        * target_suffix - is suffix of images in *raw* folder used as outputs
+        * percent_of_train - percent of images in *raw* folder to be copied to *train* folder, remaining images will
+          be copied to *test* folder
+        * rescale_factor - image rescale factor, 1.0 to not rescale.
+
+    Preparation of datasets, access from API:
+
+    .. code-block:: python
+
+        from preparedataset import PrepareDataSets
+        data_path = 'training-data'
+        ob = PrepareDataSets(data_path)
+        ob.split_random('_1.png', '_2.png', 0.8)
+        ob.create_test_data('_2.png', '_1.png') # will save npy file
+        ob.create_train_data('_2.png', '_1.png') # will save npy file
+
+    Then saved *npy* files can be easelly loaded in other part of code:
+
+    .. code-block:: python
+
+        from preparedataset import PrepareDataSets
+        data_path = 'training-data'
+        ob = PrepareDataSets(data_path)
+        imgs_in_train, imgs_out_train = ob.load_train_data()
+        imgs_in_test, imgs_out_test = ob.load_test_data()
+        # normalise, except _out, they are in range 0-1 and they are binary
+        imgs_out_train = imgs_out_train[..., np.newaxis].astype('float32') / 255
+        imgs_in_train = tools.normEach(imgs_in_train)[..., np.newaxis]
+        imgs_out_test = imgs_out_test[..., np.newaxis].astype('float32') / 255
+        imgs_in_test = tools.normEach(imgs_in_test)[..., np.newaxis]
 """
 
 import os
@@ -40,11 +80,15 @@ import glob
 
 class PrepareDataSets:
     """
-    This class provides methods for reading separate images into numpy arrays.
+    Main class forming functionality of module :mod:`preparedataset`.
 
-    It splits large dataset into testing and training subsets. Module assumes that all images exist in 'raw_path'
-    sub-folder and they follow certain naming convention like 'CORE_XXX.ext', where CORE is common for all images and
-    XXX.ext denotes input and target image.
+    Read documentation of :mod:`preparedataset` for details.
+
+    Args:
+        data_path (str):    path to *root* folder with sub-folders structure as described in :mod:`preparedataset`
+        image_rows (int, optional):   height of the image
+        image_cols (int, optional):   width of the image
+        out_prefix (str, optionsl):   prefix added to ouput *npy* files.
     """
 
     def __init__(self,
@@ -52,6 +96,10 @@ class PrepareDataSets:
                  image_rows=256,
                  image_cols=256,
                  out_prefix='imgs'):
+        """Main constructor. Create :class:`PrepareDataSets` object.
+
+        See :class:`PrepareDataSets` for parameters description.
+        """
         self.data_path = data_path
         self.image_rows = image_rows
         self.image_cols = image_cols
@@ -71,22 +119,25 @@ class PrepareDataSets:
         # name of numpy file for test targets
         self.out_test_name = out_prefix + '_mask_test.npy'
 
-    def _load_images_from_folder(self,
-                                 suffix,
-                                 from_folder,
-                                 rescale_factor=None):
+    def load_images_from_folder(self,
+                                suffix,
+                                from_folder,
+                                rescale_factor=None):
         """
         Load images with specified suffix (can be only extension) from specified folder with optional scaling.
 
-        If suffix is list it is expected to be list of files to load frm_folder.
+        If suffix is list it is expected to be list of names of files to be loaded ``from_folder``.
 
         Args:
-            suffix :            {str} - suffix, can be extension only or alternatively it can be list of files to load
-            rescale_factor :    {float} - rescale factor (0-1), None to skip
+            suffix (str):   suffix, can be extension only or list of files to be loaded
+            from_folder (str):  folder within *root* folder (:class'PrepareDataSets) to load files from
+            rescale_factor (float, optional): rescale factor (0-1), :obj:`None` to skip
 
-        Return:
-            img :   {numpy} - Array of [num, x, y] with loaded images
-            names : {str}   - List of names of loaded images in order they appear in img
+        Returns:
+            (tuple): tuple containing:
+
+                - images (:obj:`numpy.array`):   Array of [sample, height, width] with loaded images
+                - names (str):    List of names of loaded images in order they appear in returned :obj:`numpy`
         """
         if isinstance(suffix, (list,)):
             in_images = [os.path.join(from_folder, x) for x in suffix]
@@ -130,27 +181,31 @@ class PrepareDataSets:
                              from_folder,
                              rescale_factor=None):
         """
-        Load training pairs from given folder into numpy array.
+        Load training pairs from given folder into numpy arrays.
 
-        It assuems input and target (segmented) images in from_folder folder. Returned input-output pairs match
+        It assuems input and target (segmented) images in ``from_folder`` folder. Returned input-output pairs match
         indexes in output arrays where particular images are.
 
         Args:
-            in_suffix :         {str} - suffix for input images with extension (e.g. _input.png for image_1_input.png)
-            out_suffix :        {str} - suffix for target images with extension (e.g. _output.png for image_1_output.png)
-                                        If set to None, only images defined by in_suffix are loaded and out_img_train is
-                                        returned None
-            rescale_factor :    {float} - rescale factor, None to skip
+            in_suffix (str):    suffix for input images with extension (e.g. _input.png for image_1_input.png)
+            out_suffix (str):   suffix for target images with extension (e.g. _output.png for image_1_output.png)
+                                If set to :obj:`None`, only images defined by in_suffix are loaded and out_img_train is
+                                returned :obj:`None`
+            rescale_factor (float): rescale factor (0-1), :obj:`None` to skip
 
-        Return:
-            in_img_train :   {numpy} - Array of [num, x, y] with input images from train dataset (in_suffix)
-            out_img_train :  {numpy} - Array of [num, x, y] with target images from train dataset )out_suffix)
+        Returns:
+            (tuple): tuple containing:
+
+                - in_img_train (:obj:`numpy.array`):    Array of [num, x, y] with input images from train dataset
+                                                        (in_suffix)
+                - out_img_train (:obj:`numpy.array`):   Array of [num, x, y] with target images from train dataset
+                                                        (out_suffix)
         """
-        img, names = self._load_images_from_folder(in_suffix, from_folder, rescale_factor)
+        img, names = self.load_images_from_folder(in_suffix, from_folder, rescale_factor)
         if out_suffix:
             # load out_images in the same order, generate out names from in names
             names_out = [s.replace(in_suffix, out_suffix) for s in names]
-            img_mask, _ = self._load_images_from_folder(names_out, from_folder, rescale_factor)
+            img_mask, _ = self.load_images_from_folder(names_out, from_folder, rescale_factor)
             if not img.shape == img_mask.shape:
                 raise ValueError("Number of input and output images does not agree")
 
@@ -161,20 +216,16 @@ class PrepareDataSets:
                           out_suffix,
                           rescale_factor=None):
         """
-        Load training data images from train_path into numpy array and save it.
+        Load training images from *train* sub-folder into :obj:`numpy.array` array and save it under prefixed name.
 
-        Assuems input and output (segmented) images in train_path folder. Save imgs_train.npy and imgs_mask_train.npy files
-        in current folder. File imgs_train.npy contains images with suffix in_suffix and imgs_mask_train.npy those with
-        out_suffix.
+        Save *prefix_train.npy* and *prefix_mask_train.npy* files infolder specified in ::class::PrepareDataSets.
+        File *prefix_train.npy* contains images with ``in_suffix`` whereas *prefix_mask_train.npy* those with
+        ``out_suffix``.
 
         Args:
-            in_suffix :         {str} - suffix for input images with extension (e.g. _1.png for image_1.png)
-            out_suffix :        {str} - suffix for target images with extension (e.g. _2.png for image_2.png)
-            rescale_factor :    {float} - rescale factor
-
-        Return:
-            Create numpy files.
-
+            in_suffix (str):    suffix for input images with extension (e.g. _1.png for image_1.png)
+            out_suffix (str):   suffix for target images with extension (e.g. _2.png for image_2.png)
+            rescale_factor (float): rescale factor (0-1). :obj:`None` to skip rescaling
         """
         imgs, imgs_mask = self._load_training_pairs(in_suffix, out_suffix, self.train_path, rescale_factor)
         if imgs is not None:
@@ -188,13 +239,17 @@ class PrepareDataSets:
 
     def load_train_data(self):
         """
-        Load trainging data saved by create_train_data() function.
+        Load training data files saved by :func:`create_train_data` function.
 
-        Training dataset contains pairs of input and target images.
+        Returns:
+            (tuple): tuple containing:
 
-        Return:
-            in_img_train :   {numpy} - Array of [num, x, y] with input images from train dataset
-            out_img_train :  {numpy} - Array of [num, x, y] with target images from train dataset
+                - in_img_train (:obj:`numpy.array`):    Array of [num, x, y] with input images from *train* folder
+                - out_img_train (:obj:`numpy.array`):   Array of [num, x, y] with target images from *train* folder
+
+        Note:
+            Note that returned :obj:`numpy.array` arrays are in the same format as images saved on disk. Perhaps further
+            scaling is necessary. Check :mod:`preparedataset` description.
         """
         imgs_train = np.load(os.path.join(self.data_path, self.in_train_name))
         imgs_mask_train = np.load(os.path.join(self.data_path, self.out_train_name))
@@ -205,17 +260,16 @@ class PrepareDataSets:
                          out_suffix,
                          rescale_factor=None):
         """
-        Load test data images from test_path into numpy array and save it.
+        Load testing images from *test* sub-folder into numpy array and save it under prefixed name.
 
-        Assuems input and output (segmented) images in train_path folder. Save imgs_train.npy and imgs_mask_train.npy files
-        in current folder. File imgs_test.npy contains images with suffix in_suffix and imgs_mask_test.npy those with
-        out_suffix.
+        Save *prefix_test.npy* and *prefix_mask_test.npy* files infolder specified in ::class::PrepareDataSets.
+        File *prefix_test.npy* contains images with ``in_suffix`` whereas *prefix_mask_test.npy* those with
+        ``out_suffix``.
 
         Args:
-            in_suffix :         {str} - suffix for input images with extension (e.g. _1.png for image_1.png)
-            out_suffix :        {str} - suffix for target images with extension (e.g. _2.png for image_2.png)
-            rescale_factor :    {float} - rescale factor
-
+            in_suffix (str):    suffix for input images with extension (e.g. _1.png for image_1.png)
+            out_suffix (str):   suffix for target images with extension (e.g. _2.png for image_2.png)
+            rescale_factor (float): rescale factor (0-1). :obj:`None` to skip rescaling
         """
         imgs, imgs_mask = self._load_training_pairs(in_suffix, out_suffix, self.test_path, rescale_factor)
 
@@ -230,13 +284,17 @@ class PrepareDataSets:
 
     def load_test_data(self):
         """
-        Load test data saved by create_test_data() function.
+        Load testing data files saved by :func:`create_test_data` function.
 
-        Test dataset contains pairs of input and target images.
+        Returns:
+            (tuple): tuple containing:
 
-        Return:
-            in_img_test :   {numpy} - Array of [num, x, y] with input images from test dataset
-            out_img_test :  {numpy} - Array of [num, x, y] with target images from test dataset
+                - in_img_train (:obj:`numpy.array`):    Array of [num, x, y] with input images from *train* folder
+                - out_img_train (:obj:`numpy.array`):   Array of [num, x, y] with target images from *train* folder
+
+        Note:
+            Note that returned :obj:`numpy.array` arrays are in the same format as images saved on disk. Perhaps further
+            scaling is necessary. Check :mod:`preparedataset` description.
         """
         imgs_test = np.load(os.path.join(self.data_path, self.in_test_name))
         imgs_mask_test = np.load(os.path.join(self.data_path, self.out_test_name))
@@ -247,15 +305,16 @@ class PrepareDataSets:
                      out_suffix,
                      percent):
         """
-        Split training pairs from raw_path folder to two exclusive groups, for training and testsing.
+        Split training pairs from *raw* folder to two exclusive groups, and copy them to *train* and *test* folder.
 
-        Content of raw_path folder is not modified, pairs are copied to train_path and test_path.
+        Content of *raw* folder is not modified. This method finds common base in file names and copies all files
+        with the same base. Therefore, *file_1.png*, *file_2.png*, *file_3.png* will be always copied together assuming
+        that they relate to the same frame but differ in presentation (e.g. DIC, Mask, Fluorescent).
 
         Args:
-            in_suffix :     {str} - suffix for input images with extension (e.g. _1.png for image_1.png)
-            out_suffix :    {str} - suffix for target images with extension (e.g. _2.png for image_2.png)
-            percent :       {float} - percent (0-1) of images copied to test folder (copied are always pairs of images
-                                        (in, out))
+            in_suffix (str):    suffix for input images with extension (e.g. _1.png for image_1.png)
+            out_suffix (str):   suffix for target images with extension (e.g. _2.png for image_2.png)
+            percent (float):    percent (0-1) of images copied to test folder
         """
         in_images = glob.glob(os.path.join(self.raw_path, "*" + in_suffix))
         total = len(in_images)
@@ -283,7 +342,10 @@ class PrepareDataSets:
 
 if __name__ == '__main__':
     """
-    Expect four parameters in_prefix test_prefix percent (0-1) scale.
+    Expect four parameters: in_prefix test_prefix percent (0-1) scale.
+
+    See:
+        :mod:'preparedataset'
     """
     args = sys.argv
     if len(args) is not 5:

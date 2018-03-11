@@ -1,4 +1,4 @@
-"""Init file for cnntools package."""
+"""Collection of various tools used during playing with CNN."""
 
 from . import tools  # NOQA
 from . import binarymetrics  # NOQA

@@ -1,4 +1,25 @@
-"""Show image with Fiji."""
+"""Show image using Fiji backend.
+
+Basics
+------
+
+This package uses Fiji to display :obj:`numpy.array`. Temporary folder is used as intermediate transport medium, each
+array is saved as *tiff* image before displaying and then *Fiji* is called with this file as parameter. A
+reference (as file name) to displayed image is returned back to the caller allowing to re-read this image after
+modification i *Fiji*. There is random folder created in system *tmp* on each new :class:`IJShow` object.
+This solution is rather recommended to be used with IPython.
+
+Usage
+-----
+
+Example:
+    d
+
+
+
+"""
+# TODO Finish Examples of usage
+
 import os
 import os.path
 import shutil
@@ -10,9 +31,14 @@ from tifffile import imsave
 
 class IJShow:
     """
-    Show image with Fiji.
+    Construct *Fiji* based backend for showing arrays from Python.
 
-    Use temp folder to save image.
+    Read documentation of :mod:`ij_frontend` for details and examples.
+
+    Args:
+        ijpath (str):    path to ImageJ or Fiji executable
+        persistent (bool, optional):   if ``True`` either temporary folder for this session or image files will not
+                                       be deleted on object destruction.
     """
 
     ijpath = ""
