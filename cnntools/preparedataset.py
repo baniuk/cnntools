@@ -202,6 +202,7 @@ class PrepareDataSets:
                                                         (out_suffix)
         """
         img, names = self.load_images_from_folder(in_suffix, from_folder, rescale_factor)
+        img_mask = None
         if out_suffix:
             # load out_images in the same order, generate out names from in names
             names_out = [s.replace(in_suffix, out_suffix) for s in names]
@@ -224,7 +225,8 @@ class PrepareDataSets:
 
         Args:
             in_suffix (str):    suffix for input images with extension (e.g. _1.png for image_1.png)
-            out_suffix (str):   suffix for target images with extension (e.g. _2.png for image_2.png)
+            out_suffix (str):   suffix for target images with extension (e.g. _2.png for image_2.png),
+                                can be :obj:`None`
             rescale_factor (float): rescale factor (0-1). :obj:`None` to skip rescaling
         """
         imgs, imgs_mask = self._load_training_pairs(in_suffix, out_suffix, self.train_path, rescale_factor)
@@ -251,8 +253,16 @@ class PrepareDataSets:
             Note that returned :obj:`numpy.array` arrays are in the same format as images saved on disk. Perhaps further
             scaling is necessary. Check :mod:`preparedataset` description.
         """
-        imgs_train = np.load(os.path.join(self.data_path, self.in_train_name))
-        imgs_mask_train = np.load(os.path.join(self.data_path, self.out_train_name))
+        try:
+            imgs_train = np.load(os.path.join(self.data_path, self.in_train_name))
+        except FileNotFoundError:
+            print("File", self.in_train_name, "not found")
+            imgs_train = None
+        try:
+            imgs_mask_train = np.load(os.path.join(self.data_path, self.out_train_name))
+        except FileNotFoundError:
+            print("File", self.out_train_name, "not found")
+            imgs_mask_train = None
         return imgs_train, imgs_mask_train
 
     def create_test_data(self,
@@ -296,8 +306,16 @@ class PrepareDataSets:
             Note that returned :obj:`numpy.array` arrays are in the same format as images saved on disk. Perhaps further
             scaling is necessary. Check :mod:`preparedataset` description.
         """
-        imgs_test = np.load(os.path.join(self.data_path, self.in_test_name))
-        imgs_mask_test = np.load(os.path.join(self.data_path, self.out_test_name))
+        try:
+            imgs_test = np.load(os.path.join(self.data_path, self.in_test_name))
+        except FileNotFoundError:
+            print("File", self.in_test_name, "not found")
+            imgs_test = None
+        try:
+            imgs_mask_test = np.load(os.path.join(self.data_path, self.out_test_name))
+        except FileNotFoundError:
+            print("File", self.out_test_name, "not found")
+            imgs_mask_test = None
         return imgs_test, imgs_mask_test
 
     def split_random(self,

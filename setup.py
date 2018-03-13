@@ -4,7 +4,7 @@ from setuptools import setup
 from setuptools import find_packages
 
 setup(name='cnntools',
-      version='0.2',
+      version='0.3',
       description='Collection of tools used with CNN',
       url='http://github.com/baniuk/cnntools',
       author='Piotr Baniukiewicz',
