@@ -24,7 +24,9 @@ and testing datasets)
 
 Warning:
     1. *train* and *test* folders are deleted on each run of module.
-    2. Images are sored in *npy* files without processing in [sample height width] arrays.
+    2. Images are saved as *npy* files without processing as [sample height width] arrays.
+    3. Images are read in alphabetical order, note that if images names contain index at the end, it must have the same
+       number of characters in each name to be sorted properly.
 
 Example:
     The module can be called from :func:__main__ or from API. Calling from command line can look like follows:
@@ -143,6 +145,7 @@ class PrepareDataSets:
             in_images = [os.path.join(from_folder, x) for x in suffix]
         else:
             in_images = glob.glob(os.path.join(from_folder, "*" + suffix))
+            in_images.sort()
         total = int(len(in_images))
         if total == 0:
             print("No images found in ", from_folder)
