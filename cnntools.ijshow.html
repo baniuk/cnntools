@@ -1,0 +1,200 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>cnntools.ijshow package &#8212; cnntools 0.2 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="History" href="versions.html" />
+    <link rel="prev" title="cnntools package" href="cnntools.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cnntools-ijshow-package">
+<h1>cnntools.ijshow package<a class="headerlink" href="#cnntools-ijshow-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-cnntools.ijshow.ij_frontend">
+<span id="cnntools-ijshow-ij-frontend-module"></span><h3>cnntools.ijshow.ij_frontend module<a class="headerlink" href="#module-cnntools.ijshow.ij_frontend" title="Permalink to this headline">¶</a></h3>
+<p>Show image using Fiji backend.</p>
+<div class="section" id="basics">
+<h4>Basics<a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h4>
+<p>This package uses Fiji to display <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code>. Temporary folder is used as intermediate transport medium, each
+array is saved as <em>tiff</em> image before displaying and then <em>Fiji</em> is called with this file as parameter. A
+reference (as file name) to displayed image is returned back to the caller allowing to re-read this image after
+modification i <em>Fiji</em>. There is random folder created in system <em>tmp</em> on each new <a class="reference internal" href="#cnntools.ijshow.ij_frontend.IJShow" title="cnntools.ijshow.ij_frontend.IJShow"><code class="xref py py-class docutils literal"><span class="pre">IJShow</span></code></a> object.
+This solution is rather recommended to be used with IPython.</p>
+</div>
+<div class="section" id="usage">
+<h4>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h4>
+<p class="rubric">Example</p>
+<p>d</p>
+</div>
+<dl class="class">
+<dt id="cnntools.ijshow.ij_frontend.IJShow">
+<em class="property">class </em><code class="descclassname">cnntools.ijshow.ij_frontend.</code><code class="descname">IJShow</code><span class="sig-paren">(</span><em>ijpath</em>, <em>persistent=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cnntools.ijshow.ij_frontend.IJShow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct <em>Fiji</em> based backend for showing arrays from Python.</p>
+<p>Read documentation of <code class="xref py py-mod docutils literal"><span class="pre">ij_frontend</span></code> for details and examples.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ijpath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – path to ImageJ or Fiji executable</li>
+<li><strong>persistent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – if <code class="docutils literal"><span class="pre">True</span></code> either temporary folder for this session or image files will not
+be deleted on object destruction.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="cnntools.ijshow.ij_frontend.IJShow.imshow">
+<code class="descname">imshow</code><span class="sig-paren">(</span><em>image</em>, <em>convert=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/ijshow/ij_frontend.html#IJShow.imshow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.ijshow.ij_frontend.IJShow.imshow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show the image.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="cnntools.ijshow.ij_frontend.IJShow.runIjandShow">
+<em class="property">static </em><code class="descname">runIjandShow</code><span class="sig-paren">(</span><em>image_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/ijshow/ij_frontend.html#IJShow.runIjandShow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.ijshow.ij_frontend.IJShow.runIjandShow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run Fiij with file name to open.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cnntools.ijshow.ij_frontend.IJImage">
+<em class="property">class </em><code class="descclassname">cnntools.ijshow.ij_frontend.</code><code class="descname">IJImage</code><span class="sig-paren">(</span><em>image_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/ijshow/ij_frontend.html#IJImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.ijshow.ij_frontend.IJImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hold image object.</p>
+<dl class="method">
+<dt id="cnntools.ijshow.ij_frontend.IJImage.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/ijshow/ij_frontend.html#IJImage.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.ijshow.ij_frontend.IJImage.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the image and invalidate it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cnntools.ijshow.ij_frontend.IJImage.display">
+<code class="descname">display</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/ijshow/ij_frontend.html#IJImage.display"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.ijshow.ij_frontend.IJImage.display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show the image if it is valid.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cnntools.ijshow.ij_frontend.IJImage.image_name">
+<code class="descname">image_name</code><a class="headerlink" href="#cnntools.ijshow.ij_frontend.IJImage.image_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return file name of the image.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cnntools.ijshow.ij_frontend.IJImage.valid">
+<code class="descname">valid</code><a class="headerlink" href="#cnntools.ijshow.ij_frontend.IJImage.valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Property defining status of the object.</p>
+<p>Invalid file is assumed to be not existing. Invalidating always delete the file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cnntools.ijshow package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a><ul>
+<li><a class="reference internal" href="#module-cnntools.ijshow.ij_frontend">cnntools.ijshow.ij_frontend module</a><ul>
+<li><a class="reference internal" href="#basics">Basics</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">cnntools</a><ul>
+  <li><a href="cnntools.html">cnntools package</a><ul>
+      <li>Previous: <a href="cnntools.html" title="previous chapter">cnntools package</a></li>
+      <li>Next: <a href="versions.html" title="next chapter">History</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cnntools.ijshow.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Piotr Baniukiewicz.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/cnntools.ijshow.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

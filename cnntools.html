@@ -1,0 +1,549 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>cnntools package &#8212; cnntools 0.2 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="cnntools.ijshow package" href="cnntools.ijshow.html" />
+    <link rel="prev" title="cnntools" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cnntools-package">
+<h1>cnntools package<a class="headerlink" href="#cnntools-package" title="Permalink to this headline">¶</a></h1>
+<p>Top-level package including other sub-packages and modules which may not be fully related together.</p>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cnntools.ijshow.html">cnntools.ijshow package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cnntools.ijshow.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cnntools.ijshow.html#module-cnntools.ijshow.ij_frontend">cnntools.ijshow.ij_frontend module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cnntools.ijshow.html#basics">Basics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cnntools.ijshow.html#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-cnntools.binarymetrics">
+<span id="cnntools-binarymetrics-module"></span><h3>cnntools.binarymetrics module<a class="headerlink" href="#module-cnntools.binarymetrics" title="Permalink to this headline">¶</a></h3>
+<p>Binary metrics for Keras.</p>
+<p>This module contains some popular binary metrics. Most of the code is grabbed from <a class="footnote-reference" href="#id3" id="id1">[1]</a> and <a class="footnote-reference" href="#id4" id="id2">[2]</a></p>
+<p class="rubric">References</p>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><a class="reference external" href="https://github.com/keras-team/keras/issues/5400">https://github.com/keras-team/keras/issues/5400</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id4" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[2]</td><td><em>(<a class="fn-backref" href="#id2">1</a>, <a class="fn-backref" href="#id7">2</a>)</em> <a class="reference external" href="https://gist.github.com/wassname/7793e2058c5c9dacb5212c0ac0b18a8a">https://gist.github.com/wassname/7793e2058c5c9dacb5212c0ac0b18a8a</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id5" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id6">[3]</a></td><td><a class="reference external" href="https://arxiv.org/pdf/1606.04797v1.pdf">https://arxiv.org/pdf/1606.04797v1.pdf</a></td></tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="cnntools.binarymetrics.dice_coef">
+<code class="descclassname">cnntools.binarymetrics.</code><code class="descname">dice_coef</code><span class="sig-paren">(</span><em>y_true</em>, <em>y_pred</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/binarymetrics.html#dice_coef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.binarymetrics.dice_coef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dice coefficient <a class="footnote-reference" href="#id5" id="id6">[3]</a>, code taken from <a class="footnote-reference" href="#id4" id="id7">[2]</a>.</p>
+<p>This implementation assumes that input and output are binary in range 0-1.</p>
+<div class="math" id="equation-dice">
+<p><span class="eqno">(1)<a class="headerlink" href="#equation-dice" title="Permalink to this equation">¶</a></span><img src="_images/math/d4ea98b486eb35d3c65bd3535874f5f6d6b76b40.png" alt="D=\frac{2*\sum_{i=1}^{N} (x_i*y_i)}{\sum_{i=1}^{N} x_{i}^{2}+\sum_{i=1}^{N} y_{i}^{2}}"/></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>y_true</strong> (<code class="xref py py-obj docutils literal"><span class="pre">numpy</span></code>) – Ground truth values</li>
+<li><strong>y_pred</strong> (<code class="xref py py-obj docutils literal"><span class="pre">numpy</span></code>) – Predicted values</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Dice coefficient according to <a class="reference internal" href="#equation-dice">(1)</a>. Returned is one single number.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-obj docutils literal"><span class="pre">tf.Tensor</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>Use the following to evaluate returned tensor:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">keras</span> <span class="kn">import</span> <span class="n">backend</span> <span class="k">as</span> <span class="n">K</span>
+<span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">y2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">dice_coef</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span><span class="n">y2</span><span class="p">)</span>
+<span class="n">K</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="#cnntools.binarymetrics.dice_coef_loss" title="cnntools.binarymetrics.dice_coef_loss"><code class="xref py py-func docutils literal"><span class="pre">dice_coef_loss()</span></code></a></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="cnntools.binarymetrics.dice_coef_loss">
+<code class="descclassname">cnntools.binarymetrics.</code><code class="descname">dice_coef_loss</code><span class="sig-paren">(</span><em>y_true</em>, <em>y_pred</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/binarymetrics.html#dice_coef_loss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.binarymetrics.dice_coef_loss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loss function based on <a class="reference internal" href="#cnntools.binarymetrics.dice_coef" title="cnntools.binarymetrics.dice_coef"><code class="xref py py-func docutils literal"><span class="pre">dice_coef()</span></code></a>.</p>
+<p>Defined as <img class="math" src="_images/math/b3e7c25251d26857920bf1eb9e22f949ee385864.png" alt="loss=1-D"/>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="#cnntools.binarymetrics.dice_coef" title="cnntools.binarymetrics.dice_coef"><code class="xref py py-func docutils literal"><span class="pre">dice_coef()</span></code></a></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="cnntools.binarymetrics.f1">
+<code class="descclassname">cnntools.binarymetrics.</code><code class="descname">f1</code><span class="sig-paren">(</span><em>y_true</em>, <em>y_pred</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/binarymetrics.html#f1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.binarymetrics.f1" title="Permalink to this definition">¶</a></dt>
+<dd><p>F1 metric.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cnntools.binarymetrics.mcor">
+<code class="descclassname">cnntools.binarymetrics.</code><code class="descname">mcor</code><span class="sig-paren">(</span><em>y_true</em>, <em>y_pred</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/binarymetrics.html#mcor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.binarymetrics.mcor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matthews_correlation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cnntools.binarymetrics.precision">
+<code class="descclassname">cnntools.binarymetrics.</code><code class="descname">precision</code><span class="sig-paren">(</span><em>y_true</em>, <em>y_pred</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/binarymetrics.html#precision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.binarymetrics.precision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Precision metric.</p>
+<p>Only computes a batch-wise average of precision. Computes the precision, a metric for multi-label classification of
+how many selected items are relevant.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cnntools.binarymetrics.recall">
+<code class="descclassname">cnntools.binarymetrics.</code><code class="descname">recall</code><span class="sig-paren">(</span><em>y_true</em>, <em>y_pred</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/binarymetrics.html#recall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.binarymetrics.recall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recall metric.</p>
+<p>Only computes a batch-wise average of recall. Computes the recall, a metric for multi-label classification of
+how many relevant items are selected.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cnntools.preparedataset">
+<span id="cnntools-preparedataset-module"></span><h3>cnntools.preparedataset module<a class="headerlink" href="#module-cnntools.preparedataset" title="Permalink to this headline">¶</a></h3>
+<p>Prepare training and testing data-pairs for use with CNN.</p>
+<p>The purpose of <a class="reference internal" href="#cnntools.preparedataset.PrepareDataSets" title="cnntools.preparedataset.PrepareDataSets"><code class="xref py py-class docutils literal"><span class="pre">PrepareDataSets</span></code></a> is to randomly split specified dataset into two exclusive subsets containing
+training pairs and testing pairs. The input and output image within each pair is defined by common <strong>core_name</strong> and
+different <strong>suffix</strong>, e.g.:</p>
+<ul class="simple">
+<li><strong>file_1.png</strong> - can be input image</li>
+<li><strong>file_2.png</strong> - can be output image</li>
+<li><strong>file_3.png</strong> - can be other input</li>
+</ul>
+<p>In above example <em>_1.png</em> and <em>_2.png</em> stand for unique suffixes used for specifying input and output image in pair. This
+module expects certain folder structure under <em>root</em> folder. The <em>root</em> has to be specified by user on creation of
+<a class="reference internal" href="#cnntools.preparedataset.PrepareDataSets" title="cnntools.preparedataset.PrepareDataSets"><code class="xref py py-class docutils literal"><span class="pre">PrepareDataSets</span></code></a> object. Expected structure is as follows:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><em>root</em></dt>
+<dd><ul class="first last">
+<li><em>raw</em> - contain all available training data, not necessarily training pairs. Crucial is uniform file naming.</li>
+<li><em>train</em> - here randomly selected training pairs from <em>raw</em> wil be copied by <a class="reference internal" href="#cnntools.preparedataset.PrepareDataSets" title="cnntools.preparedataset.PrepareDataSets"><code class="xref py py-class docutils literal"><span class="pre">PrepareDataSets</span></code></a></li>
+<li><em>test</em> - here randomly selected testing pairs will be copied by <a class="reference internal" href="#cnntools.preparedataset.PrepareDataSets" title="cnntools.preparedataset.PrepareDataSets"><code class="xref py py-class docutils literal"><span class="pre">PrepareDataSets</span></code></a></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>At the end module produces <em>.npz</em> files in <em>root</em> folder with content of <em>train</em> and <em>test</em> folders (for sake of speed
+up of loading). Input and output images are saved to separate files (in total 4 files are created, each two for train
+and testing datasets). Additionally, these files contain filenames of images they were produced from in order they
+appear in <code class="xref py py-obj docutils literal"><span class="pre">numpy</span></code> arrays.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<ol class="last arabic simple">
+<li><em>train</em> and <em>test</em> folders are deleted on each run of module.</li>
+<li>Images are saved as <em>npz</em> files without processing as [sample height width] arrays.</li>
+<li>Images are read in alphabetical order, note that if images names contain index at the end, it must have the same
+number of characters in each name to be sorted properly.</li>
+</ol>
+</div>
+<p class="rubric">Example</p>
+<p>The module can be called from :func:__main__ or from API. Calling from command line can look like follows:</p>
+<div class="highlight-sh"><div class="highlight"><pre><span></span>python preparedataset.py <span class="s1">&#39;in_suffix&#39;</span> <span class="s1">&#39;target_suffix&#39;</span> percent_of_train rescale_factor
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>Where:</dt>
+<dd><ul class="first last simple">
+<li>in_suffix - is suffix of images in <em>raw</em> folder used as inputs</li>
+<li>target_suffix - is suffix of images in <em>raw</em> folder used as outputs</li>
+<li>percent_of_train - percent of images in <em>raw</em> folder to be copied to <em>train</em> folder, remaining images will
+be copied to <em>test</em> folder</li>
+<li>rescale_factor - image rescale factor, 1.0 to not rescale.</li>
+</ul>
+</dd>
+</dl>
+<p>Preparation of datasets, access from API:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">preparedataset</span> <span class="kn">import</span> <span class="n">PrepareDataSets</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="s1">&#39;training-data&#39;</span>
+<span class="n">ob</span> <span class="o">=</span> <span class="n">PrepareDataSets</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
+<span class="n">ob</span><span class="o">.</span><span class="n">split_random</span><span class="p">(</span><span class="s1">&#39;_1.png&#39;</span><span class="p">,</span> <span class="s1">&#39;_2.png&#39;</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+<span class="n">ob</span><span class="o">.</span><span class="n">create_test_data</span><span class="p">(</span><span class="s1">&#39;_2.png&#39;</span><span class="p">,</span> <span class="s1">&#39;_1.png&#39;</span><span class="p">)</span> <span class="c1"># will save npz file</span>
+<span class="n">ob</span><span class="o">.</span><span class="n">create_train_data</span><span class="p">(</span><span class="s1">&#39;_2.png&#39;</span><span class="p">,</span> <span class="s1">&#39;_1.png&#39;</span><span class="p">)</span> <span class="c1"># will save npz file</span>
+</pre></div>
+</div>
+<p>Then saved <em>npz</em> files can be easelly loaded in other part of code:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">preparedataset</span> <span class="kn">import</span> <span class="n">PrepareDataSets</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="s1">&#39;training-data&#39;</span>
+<span class="n">ob</span> <span class="o">=</span> <span class="n">PrepareDataSets</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
+<span class="n">imgs_in_train</span><span class="p">,</span> <span class="n">imgs_out_train</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="n">load_train_data</span><span class="p">()</span>
+<span class="n">imgs_in_test</span><span class="p">,</span> <span class="n">imgs_out_test</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="n">load_test_data</span><span class="p">()</span>
+<span class="c1"># normalise, except _out, they are in range 0-1 and they are binary</span>
+<span class="n">imgs_out_train</span> <span class="o">=</span> <span class="n">imgs_out_train</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span>
+<span class="n">imgs_in_train</span> <span class="o">=</span> <span class="n">tools</span><span class="o">.</span><span class="n">normEach</span><span class="p">(</span><span class="n">imgs_in_train</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+<span class="n">imgs_out_test</span> <span class="o">=</span> <span class="n">imgs_out_test</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span>
+<span class="n">imgs_in_test</span> <span class="o">=</span> <span class="n">tools</span><span class="o">.</span><span class="n">normEach</span><span class="p">(</span><span class="n">imgs_in_test</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="cnntools.preparedataset.PrepareDataSets">
+<em class="property">class </em><code class="descclassname">cnntools.preparedataset.</code><code class="descname">PrepareDataSets</code><span class="sig-paren">(</span><em>data_path</em>, <em>image_rows=256</em>, <em>image_cols=256</em>, <em>out_prefix='imgs'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/preparedataset.html#PrepareDataSets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.preparedataset.PrepareDataSets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Main class forming functionality of module <code class="xref py py-mod docutils literal"><span class="pre">preparedataset</span></code>.</p>
+<p>Read documentation of <code class="xref py py-mod docutils literal"><span class="pre">preparedataset</span></code> for details.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – path to <em>root</em> folder with sub-folders structure as described in <code class="xref py py-mod docutils literal"><span class="pre">preparedataset</span></code></li>
+<li><strong>image_rows</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – height of the image</li>
+<li><strong>image_cols</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – width of the image</li>
+<li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>optionsl</em>) – prefix added to ouput <em>npz</em> files.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="cnntools.preparedataset.PrepareDataSets.create_test_data">
+<code class="descname">create_test_data</code><span class="sig-paren">(</span><em>in_suffix</em>, <em>out_suffix</em>, <em>rescale_factor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/preparedataset.html#PrepareDataSets.create_test_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.preparedataset.PrepareDataSets.create_test_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load testing images from <em>test</em> sub-folder into numpy array and save it under prefixed name.</p>
+<p>Save <em>prefix_test.npz</em> and <em>prefix_mask_test.npz</em> files infolder specified in ::class::PrepareDataSets.
+File <em>prefix_test.npz</em> contains images with <code class="docutils literal"><span class="pre">in_suffix</span></code> whereas <em>prefix_mask_test.npz</em> those with
+<code class="docutils literal"><span class="pre">out_suffix</span></code>. Both files contain two arrays, data and file names, both under keys <strong>data</strong> and <strong>names</strong>
+respectivelly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>in_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – suffix for input images with extension (e.g. _1.png for image_1.png)</li>
+<li><strong>out_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – suffix for target images with extension (e.g. _2.png for image_2.png)</li>
+<li><strong>rescale_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – rescale factor (0-1). <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a> to skip rescaling</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cnntools.preparedataset.PrepareDataSets.create_train_data">
+<code class="descname">create_train_data</code><span class="sig-paren">(</span><em>in_suffix</em>, <em>out_suffix</em>, <em>rescale_factor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/preparedataset.html#PrepareDataSets.create_train_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.preparedataset.PrepareDataSets.create_train_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load training images from <em>train</em> sub-folder into <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code> array and save it under prefixed name.</p>
+<p>Save <em>prefix_train.npz</em> and <em>prefix_mask_train.npz</em> files infolder specified in ::class::PrepareDataSets.
+File <em>prefix_train.npz</em> contains images with <code class="docutils literal"><span class="pre">in_suffix</span></code> whereas <em>prefix_mask_train.npz</em> those with
+<code class="docutils literal"><span class="pre">out_suffix</span></code>. Both files contain two arrays, data and file names, both under keys <strong>data</strong> and <strong>names</strong>
+respectivelly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>in_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – suffix for input images with extension (e.g. _1.png for image_1.png)</li>
+<li><strong>out_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – suffix for target images with extension (e.g. _2.png for image_2.png),
+can be <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a></li>
+<li><strong>rescale_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – rescale factor (0-1). <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a> to skip rescaling</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cnntools.preparedataset.PrepareDataSets.load_images_from_folder">
+<code class="descname">load_images_from_folder</code><span class="sig-paren">(</span><em>suffix</em>, <em>from_folder</em>, <em>rescale_factor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/preparedataset.html#PrepareDataSets.load_images_from_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.preparedataset.PrepareDataSets.load_images_from_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load images with specified suffix (can be only extension) from specified folder with optional scaling.</p>
+<p>If suffix is list it is expected to be list of names of files to be loaded <code class="docutils literal"><span class="pre">from_folder</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – suffix, can be extension only or list of files to be loaded</li>
+<li><strong>from_folder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – folder within <em>root</em> folder (:class’PrepareDataSets) to load files from</li>
+<li><strong>rescale_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><em>optional</em>) – rescale factor (0-1), <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a> to skip</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>tuple containing:</p>
+<blockquote>
+<div><ul class="simple">
+<li>images (<code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code>):   Array of [sample, height, width] with loaded images</li>
+<li>names (str):    List of names of loaded images in order they appear in returned <code class="xref py py-obj docutils literal"><span class="pre">numpy</span></code></li>
+</ul>
+</div></blockquote>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.6)">tuple</a>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cnntools.preparedataset.PrepareDataSets.load_test_data">
+<code class="descname">load_test_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/preparedataset.html#PrepareDataSets.load_test_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.preparedataset.PrepareDataSets.load_test_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load testing data files saved by <a class="reference internal" href="#cnntools.preparedataset.PrepareDataSets.create_test_data" title="cnntools.preparedataset.PrepareDataSets.create_test_data"><code class="xref py py-func docutils literal"><span class="pre">create_test_data()</span></code></a> function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple containing:<blockquote>
+<div><ul class="simple">
+<li>in_img_train (<code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code>):    Array of [num, x, y] with input images from <em>train</em> folder</li>
+<li>out_img_train (<code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code>):   Array of [num, x, y] with target images from <em>train</em> folder</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.6)">tuple</a>)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note that returned <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code> arrays are in the same format as images saved on disk. Perhaps further
+scaling is necessary. Check <code class="xref py py-mod docutils literal"><span class="pre">preparedataset</span></code> description.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="cnntools.preparedataset.PrepareDataSets.load_train_data">
+<code class="descname">load_train_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/preparedataset.html#PrepareDataSets.load_train_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.preparedataset.PrepareDataSets.load_train_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load training data files saved by <a class="reference internal" href="#cnntools.preparedataset.PrepareDataSets.create_train_data" title="cnntools.preparedataset.PrepareDataSets.create_train_data"><code class="xref py py-func docutils literal"><span class="pre">create_train_data()</span></code></a> function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple containing:<blockquote>
+<div><ul class="simple">
+<li>in_img_train (<code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code>):    Array of [num, x, y] with input images from <em>train</em> folder</li>
+<li>out_img_train (<code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code>):   Array of [num, x, y] with target images from <em>train</em> folder</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.6)">tuple</a>)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note that returned <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code> arrays are in the same format as images saved on disk. Perhaps further
+scaling is necessary. Check <code class="xref py py-mod docutils literal"><span class="pre">preparedataset</span></code> description.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="cnntools.preparedataset.PrepareDataSets.split_random">
+<code class="descname">split_random</code><span class="sig-paren">(</span><em>in_suffix</em>, <em>out_suffix</em>, <em>percent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/preparedataset.html#PrepareDataSets.split_random"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.preparedataset.PrepareDataSets.split_random" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split training pairs from <em>raw</em> folder to two exclusive groups, and copy them to <em>train</em> and <em>test</em> folder.</p>
+<p>Content of <em>raw</em> folder is not modified. This method finds common base in file names and copies all files
+with the same base. Therefore, <em>file_1.png</em>, <em>file_2.png</em>, <em>file_3.png</em> will be always copied together assuming
+that they relate to the same frame but differ in presentation (e.g. DIC, Mask, Fluorescent).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>in_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – suffix for input images with extension (e.g. _1.png for image_1.png)</li>
+<li><strong>out_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – suffix for target images with extension (e.g. _2.png for image_2.png). Can be <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a></li>
+<li><strong>percent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – percent (0-1) of images copied to test folder</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cnntools.tools">
+<span id="cnntools-tools-module"></span><h3>cnntools.tools module<a class="headerlink" href="#module-cnntools.tools" title="Permalink to this headline">¶</a></h3>
+<p>Tools used by this project.</p>
+<dl class="function">
+<dt id="cnntools.tools.asRgbImage">
+<code class="descclassname">cnntools.tools.</code><code class="descname">asRgbImage</code><span class="sig-paren">(</span><em>red</em>, <em>blue=None</em>, <em>green=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/tools.html#asRgbImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.tools.asRgbImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert planes RGB to image 8-bit.</p>
+<p>Any input is rescaled to 8-bit 0-255 range.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cnntools.tools.norm01">
+<code class="descclassname">cnntools.tools.</code><code class="descname">norm01</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/tools.html#norm01"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.tools.norm01" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalise to range 01.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cnntools.tools.normAll">
+<code class="descclassname">cnntools.tools.</code><code class="descname">normAll</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/tools.html#normAll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.tools.normAll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalise whole array to its mean and std.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> – {numpy} - [case x y] array</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">normalised array same as input</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cnntools.tools.normEach">
+<code class="descclassname">cnntools.tools.</code><code class="descname">normEach</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cnntools/tools.html#normEach"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cnntools.tools.normEach" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalise each slice to its mean and std array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> – {numpy} - [case x y] array</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">normalised array same as input</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cnntools package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a><ul>
+<li><a class="reference internal" href="#module-cnntools.binarymetrics">cnntools.binarymetrics module</a></li>
+<li><a class="reference internal" href="#module-cnntools.preparedataset">cnntools.preparedataset module</a></li>
+<li><a class="reference internal" href="#module-cnntools.tools">cnntools.tools module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">cnntools</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">cnntools</a></li>
+      <li>Next: <a href="cnntools.ijshow.html" title="next chapter">cnntools.ijshow package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cnntools.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Piotr Baniukiewicz.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/cnntools.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
