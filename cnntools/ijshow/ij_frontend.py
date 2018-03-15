@@ -79,7 +79,7 @@ class IJShow:
             image = image.astype('float32')
         imsave(image_name, image)  # save under tmp folder
         ob = IJImage(image_name)  # create output object
-        self.images.append(ob)  # store in internal list FIXME not shure why yet
+        self.images.append(ob)  # store in internal list FIXME not sure why yet
         ob.display()  # show the image
         return ob
 

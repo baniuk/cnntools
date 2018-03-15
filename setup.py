@@ -2,9 +2,10 @@
 
 from setuptools import setup
 from setuptools import find_packages
+from cnntools import __version__ as ver
 
 setup(name='cnntools',
-      version='0.3',
+      version=ver,
       description='Collection of tools used with CNN',
       url='http://github.com/baniuk/cnntools',
       author='Piotr Baniukiewicz',

@@ -4,3 +4,5 @@ from . import tools  # NOQA
 from . import binarymetrics  # NOQA
 from . import preparedataset  # NOQA
 from . import ijshow  # NOQA
+
+__version__ = 0.4

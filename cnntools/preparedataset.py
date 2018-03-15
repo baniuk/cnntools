@@ -334,7 +334,7 @@ class PrepareDataSets:
 
         Args:
             in_suffix (str):    suffix for input images with extension (e.g. _1.png for image_1.png)
-            out_suffix (str):   suffix for target images with extension (e.g. _2.png for image_2.png)
+            out_suffix (str):   suffix for target images with extension (e.g. _2.png for image_2.png). Can be :obj:`None`
             percent (float):    percent (0-1) of images copied to test folder
         """
         in_images = glob.glob(os.path.join(self.raw_path, "*" + in_suffix))
@@ -345,19 +345,27 @@ class PrepareDataSets:
         testing_in = random.sample(in_images, round(total * percent))  # selected for tests
         training_in = [x for x in in_images if x not in testing_in]  # remaining (without test)
         # generate also output file names from splited inputs
-        testing_out = [s.replace(in_suffix, out_suffix) for s in testing_in]
-        training_out = [s.replace(in_suffix, out_suffix) for s in training_in]
+        if out_suffix is not None:
+            testing_out = [s.replace(in_suffix, out_suffix) for s in testing_in]
+            training_out = [s.replace(in_suffix, out_suffix) for s in training_in]
+        else:
+            testing_out = [None] * len(testing_in)
+            training_out = [None] * len(training_in)  # fake array of out data, must be same length as in
         # copy images from raw folder to test and train folders
-        shutil.rmtree(self.train_path)
+        if os.path.isdir(self.train_path):
+            shutil.rmtree(self.train_path)
         os.makedirs(self.train_path)
-        shutil.rmtree(self.test_path)
+        if os.path.isdir(self.test_path):
+            shutil.rmtree(self.test_path)
         os.makedirs(self.test_path)
         for (ti, to) in zip(testing_in, testing_out):
             shutil.copy(ti, self.test_path)
-            shutil.copy(to, self.test_path)
+            if to:  # if not None
+                shutil.copy(to, self.test_path)
         for (ti, to) in zip(training_in, training_out):
             shutil.copy(ti, self.train_path)
-            shutil.copy(to, self.train_path)
+            if to:
+                shutil.copy(to, self.train_path)
         print("Number of training and testing pairs: {0}/{1}".format(len(training_in), len(testing_in)))
 
 

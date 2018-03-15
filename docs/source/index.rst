@@ -15,6 +15,7 @@ documentation.
    :caption: Contents of the package:
 
    modules.rst
+   versions.rst
 
 
 
