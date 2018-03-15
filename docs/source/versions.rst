@@ -8,5 +8,5 @@ History
 TODO
 ====
 
-- #TODO: Save file names with arrays and then return :obj:`tuple` from
+- [ ] #TODO: Save file names with arrays and then return :obj:`tuple` from
  :meth:`~cnntools.preparedataset.PrepareDataSets.load_train_data`

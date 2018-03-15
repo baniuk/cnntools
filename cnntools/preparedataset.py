@@ -18,13 +18,14 @@ module expects certain folder structure under *root* folder. The *root* has to b
     * *train* - here randomly selected training pairs from *raw* wil be copied by :class:`PrepareDataSets`
     * *test* - here randomly selected testing pairs will be copied by :class:`PrepareDataSets`
 
-At the end module produces *.npy* files in *root* folder with content of *train* and *test* folders (for sake of speed
+At the end module produces *.npz* files in *root* folder with content of *train* and *test* folders (for sake of speed
 up of loading). Input and output images are saved to separate files (in total 4 files are created, each two for train
-and testing datasets)
+and testing datasets). Additionally, these files contain filenames of images they were produced from in order they
+appear in :obj:`numpy` arrays.
 
 Warning:
     1. *train* and *test* folders are deleted on each run of module.
-    2. Images are saved as *npy* files without processing as [sample height width] arrays.
+    2. Images are saved as *npz* files without processing as [sample height width] arrays.
     3. Images are read in alphabetical order, note that if images names contain index at the end, it must have the same
        number of characters in each name to be sorted properly.
 
@@ -50,10 +51,10 @@ Example:
         data_path = 'training-data'
         ob = PrepareDataSets(data_path)
         ob.split_random('_1.png', '_2.png', 0.8)
-        ob.create_test_data('_2.png', '_1.png') # will save npy file
-        ob.create_train_data('_2.png', '_1.png') # will save npy file
+        ob.create_test_data('_2.png', '_1.png') # will save npz file
+        ob.create_train_data('_2.png', '_1.png') # will save npz file
 
-    Then saved *npy* files can be easelly loaded in other part of code:
+    Then saved *npz* files can be easelly loaded in other part of code:
 
     .. code-block:: python
 
@@ -68,6 +69,7 @@ Example:
         imgs_out_test = imgs_out_test[..., np.newaxis].astype('float32') / 255
         imgs_in_test = tools.normEach(imgs_in_test)[..., np.newaxis]
 """
+# TODO Update examples after supporting name saving
 
 import os
 import sys
@@ -90,7 +92,7 @@ class PrepareDataSets:
         data_path (str):    path to *root* folder with sub-folders structure as described in :mod:`preparedataset`
         image_rows (int, optional):   height of the image
         image_cols (int, optional):   width of the image
-        out_prefix (str, optionsl):   prefix added to ouput *npy* files.
+        out_prefix (str, optionsl):   prefix added to ouput *npz* files.
     """
 
     def __init__(self,
@@ -113,13 +115,13 @@ class PrepareDataSets:
         # pairs selected to be used for tests
         self.test_path = os.path.join(data_path, 'test')
         # name of numpy file for training inputs
-        self.in_train_name = out_prefix + '_train.npy'
+        self.in_train_name = out_prefix + '_train.npz'
         # name of numpy file for training targets
-        self.out_train_name = out_prefix + '_mask_train.npy'
+        self.out_train_name = out_prefix + '_mask_train.npz'
         # name of numpy file for test inputs
-        self.in_test_name = out_prefix + '_test.npy'
+        self.in_test_name = out_prefix + '_test.npz'
         # name of numpy file for test targets
-        self.out_test_name = out_prefix + '_mask_test.npy'
+        self.out_test_name = out_prefix + '_mask_test.npz'
 
     def load_images_from_folder(self,
                                 suffix,
@@ -203,6 +205,8 @@ class PrepareDataSets:
                                                         (in_suffix)
                 - out_img_train (:obj:`numpy.array`):   Array of [num, x, y] with target images from train dataset
                                                         (out_suffix)
+                - in_names (:obj:list):                 List of names of files that forms ``in_img_train`` array
+                - out_names (:obj:list):                List of names of files that forms ``out_img_train`` array
         """
         img, names = self.load_images_from_folder(in_suffix, from_folder, rescale_factor)
         img_mask = None
@@ -213,7 +217,7 @@ class PrepareDataSets:
             if not img.shape == img_mask.shape:
                 raise ValueError("Number of input and output images does not agree")
 
-        return img, img_mask
+        return img, img_mask, names, names_out
 
     def create_train_data(self,
                           in_suffix,
@@ -222,9 +226,10 @@ class PrepareDataSets:
         """
         Load training images from *train* sub-folder into :obj:`numpy.array` array and save it under prefixed name.
 
-        Save *prefix_train.npy* and *prefix_mask_train.npy* files infolder specified in ::class::PrepareDataSets.
-        File *prefix_train.npy* contains images with ``in_suffix`` whereas *prefix_mask_train.npy* those with
-        ``out_suffix``.
+        Save *prefix_train.npz* and *prefix_mask_train.npz* files infolder specified in ::class::PrepareDataSets.
+        File *prefix_train.npz* contains images with ``in_suffix`` whereas *prefix_mask_train.npz* those with
+        ``out_suffix``. Both files contain two arrays, data and file names, both under keys **data** and **names**
+        respectivelly.
 
         Args:
             in_suffix (str):    suffix for input images with extension (e.g. _1.png for image_1.png)
@@ -232,12 +237,13 @@ class PrepareDataSets:
                                 can be :obj:`None`
             rescale_factor (float): rescale factor (0-1). :obj:`None` to skip rescaling
         """
-        imgs, imgs_mask = self._load_training_pairs(in_suffix, out_suffix, self.train_path, rescale_factor)
+        imgs, imgs_mask, names, names_out = self._load_training_pairs(
+            in_suffix, out_suffix, self.train_path, rescale_factor)
         if imgs is not None:
-            np.save(os.path.join(self.data_path, self.in_train_name), imgs)
+            np.savez_compressed(os.path.join(self.data_path, self.in_train_name), data=imgs, names=names)
             print('Saving to {0} files done.'.format(os.path.join(self.data_path, self.in_train_name)))
             if imgs_mask is not None:
-                np.save(os.path.join(self.data_path, self.out_train_name), imgs_mask)
+                np.savez_compressed(os.path.join(self.data_path, self.out_train_name), data=imgs_mask, names=names_out)
                 print('Saving to {0} files done.'.format(os.path.join(self.data_path, self.out_train_name)))
         else:
             print("Train data not saved - no images")
@@ -275,22 +281,24 @@ class PrepareDataSets:
         """
         Load testing images from *test* sub-folder into numpy array and save it under prefixed name.
 
-        Save *prefix_test.npy* and *prefix_mask_test.npy* files infolder specified in ::class::PrepareDataSets.
-        File *prefix_test.npy* contains images with ``in_suffix`` whereas *prefix_mask_test.npy* those with
-        ``out_suffix``.
+        Save *prefix_test.npz* and *prefix_mask_test.npz* files infolder specified in ::class::PrepareDataSets.
+        File *prefix_test.npz* contains images with ``in_suffix`` whereas *prefix_mask_test.npz* those with
+        ``out_suffix``. Both files contain two arrays, data and file names, both under keys **data** and **names**
+        respectivelly.
 
         Args:
             in_suffix (str):    suffix for input images with extension (e.g. _1.png for image_1.png)
             out_suffix (str):   suffix for target images with extension (e.g. _2.png for image_2.png)
             rescale_factor (float): rescale factor (0-1). :obj:`None` to skip rescaling
         """
-        imgs, imgs_mask = self._load_training_pairs(in_suffix, out_suffix, self.test_path, rescale_factor)
+        imgs, imgs_mask, names, names_out = self._load_training_pairs(
+            in_suffix, out_suffix, self.test_path, rescale_factor)
 
         if imgs is not None:
-            np.save(os.path.join(self.data_path, self.in_test_name), imgs)
+            np.savez_compressed(os.path.join(self.data_path, self.in_test_name), data=imgs, names=names)
             print('Saving to {0} files done.'.format(os.path.join(self.data_path, self.in_test_name)))
             if imgs_mask is not None:
-                np.save(os.path.join(self.data_path, self.out_test_name), imgs_mask)
+                np.savez_compressed(os.path.join(self.data_path, self.out_test_name), data=imgs_mask, names=names_out)
                 print('Saving to {0} files done.'.format(os.path.join(self.data_path, self.out_test_name)))
         else:
             print("Train data not saved - no images")
@@ -319,6 +327,7 @@ class PrepareDataSets:
         except FileNotFoundError:
             print("File", self.out_test_name, "not found")
             imgs_mask_test = None
+        # TODO return https://stackoverflow.com/questions/354883/how-do-you-return-multiple-values-in-python
         return imgs_test, imgs_mask_test
 
     def split_random(self,
