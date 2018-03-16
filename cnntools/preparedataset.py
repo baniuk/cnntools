@@ -61,18 +61,17 @@ Example:
         from preparedataset import PrepareDataSets
         data_path = 'training-data'
         ob = PrepareDataSets(data_path)
-        imgs_in_train, imgs_out_train = ob.load_train_data()
-        imgs_in_test, imgs_out_test = ob.load_test_data()
+        train = ob.load_train_data()
+        test = ob.load_test_data()
+        # available fields
+        imgs_out_train._fields
         # normalise, except _out, they are in range 0-1 and they are binary
-        imgs_out_train = imgs_out_train[..., np.newaxis].astype('float32') / 255
-        imgs_in_train = tools.normEach(imgs_in_train)[..., np.newaxis]
-        imgs_out_test = imgs_out_test[..., np.newaxis].astype('float32') / 255
-        imgs_in_test = tools.normEach(imgs_in_test)[..., np.newaxis]
+        imgs_out_train = train.output[..., np.newaxis].astype('float32') / 255
+        imgs_in_train = tools.normEach(train.input)[..., np.newaxis]
 """
-# TODO Update examples after supporting name saving
-
 import os
 import sys
+from collections import namedtuple
 import numpy as np
 
 from skimage.io import imread
@@ -210,6 +209,7 @@ class PrepareDataSets:
         """
         img, names = self.load_images_from_folder(in_suffix, from_folder, rescale_factor)
         img_mask = None
+        names_out = None
         if out_suffix:
             # load out_images in the same order, generate out names from in names
             names_out = [s.replace(in_suffix, out_suffix) for s in names]
@@ -253,26 +253,62 @@ class PrepareDataSets:
         Load training data files saved by :func:`create_train_data` function.
 
         Returns:
-            (tuple): tuple containing:
+            (:obj:`~collections.namedtuple`): tuple containing:
 
-                - in_img_train (:obj:`numpy.array`):    Array of [num, x, y] with input images from *train* folder
-                - out_img_train (:obj:`numpy.array`):   Array of [num, x, y] with target images from *train* folder
+                - input (:obj:`numpy.array`):    Array of [num, x, y] with input images from *train* folder
+                - input_names (:obj:`numpy.array`): Names of the images that form ``input`` array in correct order
+                - output (:obj:`numpy.array`):   Array of [num, x, y] with target images from *train* folder
+                - output_names (:obj:`numpy.array`): Names of the images that form ``output`` array in correct order
 
         Note:
             Note that returned :obj:`numpy.array` arrays are in the same format as images saved on disk. Perhaps further
             scaling is necessary. Check :mod:`preparedataset` description.
         """
+        imgs_train, imgs_mask_train, imgs_names, mask_names = self._loadDatasets(
+            self.in_train_name, self.out_train_name)
+        TrainData = namedtuple('TrainData', ['input', 'output', 'input_names', 'output_names'])
+        return TrainData(input=imgs_train, input_names=imgs_names, output=imgs_mask_train,
+                         output_names=mask_names)
+
+    def _loadDatasets(self, input_file_name, output_file_name):
+        """Load datasets created by :meth:`create_train_data` and :meth:`create_test_data`.
+
+        Args:
+            input_file_name (str):   name of input dataset (given by first prefix in :meth:`create_train_data` and
+                                :meth:`create_test_data`)
+            output_file_name (str):  name of output dataset (given by second prefix in :meth:`create_train_data` and
+                                :meth:`create_test_data`)
+
+        Returns:
+            (tuple): tuple containing:
+
+                - input (:obj:`numpy.array`):    Array of [num, x, y] with input images from train dataset
+                                                 (``input_file_name``)
+                - output (:obj:`numpy.array`):   Array of [num, x, y] with target images from train dataset
+                                                 (``output_file_name``)
+                - input_names (:obj:list):       List of names of files that forms ``input`` array
+                - output_names (:obj:list):      List of names of files that forms ``output`` array
+
+        Note:
+            Outputs can be :obj:None if dile is not found.
+        """
         try:
-            imgs_train = np.load(os.path.join(self.data_path, self.in_train_name))
+            _imgs_train = np.load(os.path.join(self.data_path, input_file_name))
+            imgs_train = _imgs_train['data']
+            imgs_names = _imgs_train['names']
         except FileNotFoundError:
-            print("File", self.in_train_name, "not found")
+            print("File", input_file_name, "not found")
             imgs_train = None
+            imgs_names = None
         try:
-            imgs_mask_train = np.load(os.path.join(self.data_path, self.out_train_name))
+            _imgs_mask_train = np.load(os.path.join(self.data_path, output_file_name))
+            imgs_mask_train = _imgs_mask_train['data']
+            mask_names = _imgs_mask_train['names']
         except FileNotFoundError:
-            print("File", self.out_train_name, "not found")
+            print("File", output_file_name, "not found")
             imgs_mask_train = None
-        return imgs_train, imgs_mask_train
+            mask_names = None
+        return imgs_train, imgs_mask_train, imgs_names, mask_names
 
     def create_test_data(self,
                          in_suffix,
@@ -305,30 +341,24 @@ class PrepareDataSets:
 
     def load_test_data(self):
         """
-        Load testing data files saved by :func:`create_test_data` function.
+        Load test data files saved by :func:`create_test_data` function.
 
         Returns:
-            (tuple): tuple containing:
+            (:obj:`~collections.namedtuple`): tuple containing:
 
-                - in_img_train (:obj:`numpy.array`):    Array of [num, x, y] with input images from *train* folder
-                - out_img_train (:obj:`numpy.array`):   Array of [num, x, y] with target images from *train* folder
+                - input (:obj:`numpy.array`):    Array of [num, x, y] with input images from *test* folder
+                - input_names (:obj:`numpy.array`): Names of the images that form ``input`` array in correct order
+                - output (:obj:`numpy.array`):   Array of [num, x, y] with target images from *test* folder
+                - output_names (:obj:`numpy.array`): Names of the images that form ``output`` array in correct order
 
         Note:
             Note that returned :obj:`numpy.array` arrays are in the same format as images saved on disk. Perhaps further
             scaling is necessary. Check :mod:`preparedataset` description.
         """
-        try:
-            imgs_test = np.load(os.path.join(self.data_path, self.in_test_name))
-        except FileNotFoundError:
-            print("File", self.in_test_name, "not found")
-            imgs_test = None
-        try:
-            imgs_mask_test = np.load(os.path.join(self.data_path, self.out_test_name))
-        except FileNotFoundError:
-            print("File", self.out_test_name, "not found")
-            imgs_mask_test = None
-        # TODO return https://stackoverflow.com/questions/354883/how-do-you-return-multiple-values-in-python
-        return imgs_test, imgs_mask_test
+        imgs_train, imgs_mask_train, imgs_names, mask_names = self._loadDatasets(self.in_test_name, self.out_test_name)
+        TestData = namedtuple('TestData', ['input', 'output', 'input_names', 'output_names'])
+        return TestData(input=imgs_train, input_names=imgs_names, output=imgs_mask_train,
+                        output_names=mask_names)
 
     def split_random(self,
                      in_suffix,
