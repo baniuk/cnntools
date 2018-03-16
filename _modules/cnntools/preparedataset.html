@@ -102,18 +102,17 @@
 <span class="sd">        from preparedataset import PrepareDataSets</span>
 <span class="sd">        data_path = &#39;training-data&#39;</span>
 <span class="sd">        ob = PrepareDataSets(data_path)</span>
-<span class="sd">        imgs_in_train, imgs_out_train = ob.load_train_data()</span>
-<span class="sd">        imgs_in_test, imgs_out_test = ob.load_test_data()</span>
+<span class="sd">        train = ob.load_train_data()</span>
+<span class="sd">        test = ob.load_test_data()</span>
+<span class="sd">        # available fields</span>
+<span class="sd">        imgs_out_train._fields</span>
 <span class="sd">        # normalise, except _out, they are in range 0-1 and they are binary</span>
-<span class="sd">        imgs_out_train = imgs_out_train[..., np.newaxis].astype(&#39;float32&#39;) / 255</span>
-<span class="sd">        imgs_in_train = tools.normEach(imgs_in_train)[..., np.newaxis]</span>
-<span class="sd">        imgs_out_test = imgs_out_test[..., np.newaxis].astype(&#39;float32&#39;) / 255</span>
-<span class="sd">        imgs_in_test = tools.normEach(imgs_in_test)[..., np.newaxis]</span>
+<span class="sd">        imgs_out_train = train.output[..., np.newaxis].astype(&#39;float32&#39;) / 255</span>
+<span class="sd">        imgs_in_train = tools.normEach(train.input)[..., np.newaxis]</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="c1"># TODO Update examples after supporting name saving</span>
-
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">skimage.io</span> <span class="k">import</span> <span class="n">imread</span>
@@ -218,8 +217,8 @@
             <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done: </span><span class="si">{0}</span><span class="s1">/</span><span class="si">{1}</span><span class="s1"> images&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">total</span><span class="p">))</span>
             <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loading of </span><span class="si">{0}</span><span class="s1"> images done. Output image size is [</span><span class="si">{1}</span><span class="s1">,</span><span class="si">{2}</span><span class="s1">].&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_rows</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_cols</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">imgs</span><span class="p">,</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">in_images</span><span class="p">]</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loading of </span><span class="si">{0}</span><span class="s1"> images done. Output image size is [</span><span class="si">{1}</span><span class="s1">,</span><span class="si">{2}</span><span class="s1">].&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_rows</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_cols</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">imgs</span><span class="p">,</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">in_images</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_load_training_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                              <span class="n">in_suffix</span><span class="p">,</span>
@@ -251,6 +250,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">img</span><span class="p">,</span> <span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_images_from_folder</span><span class="p">(</span><span class="n">in_suffix</span><span class="p">,</span> <span class="n">from_folder</span><span class="p">,</span> <span class="n">rescale_factor</span><span class="p">)</span>
         <span class="n">img_mask</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">names_out</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">out_suffix</span><span class="p">:</span>
             <span class="c1"># load out_images in the same order, generate out names from in names</span>
             <span class="n">names_out</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">in_suffix</span><span class="p">,</span> <span class="n">out_suffix</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
@@ -286,34 +286,70 @@
             <span class="k">if</span> <span class="n">imgs_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">savez_compressed</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_train_name</span><span class="p">),</span> <span class="n">data</span><span class="o">=</span><span class="n">imgs_mask</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names_out</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saving to </span><span class="si">{0}</span><span class="s1"> files done.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_train_name</span><span class="p">)))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Train data not saved - no images&quot;</span><span class="p">)</span></div>
+        <span class="k">else</span><span class="p">:</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Train data not saved - no images&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PrepareDataSets.load_train_data"><a class="viewcode-back" href="../../cnntools.html#cnntools.preparedataset.PrepareDataSets.load_train_data">[docs]</a>    <span class="k">def</span> <span class="nf">load_train_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load training data files saved by :func:`create_train_data` function.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (tuple): tuple containing:</span>
+<span class="sd">            (:obj:`~collections.namedtuple`): tuple containing:</span>
 
-<span class="sd">                - in_img_train (:obj:`numpy.array`):    Array of [num, x, y] with input images from *train* folder</span>
-<span class="sd">                - out_img_train (:obj:`numpy.array`):   Array of [num, x, y] with target images from *train* folder</span>
+<span class="sd">                - input (:obj:`numpy.array`):    Array of [num, x, y] with input images from *train* folder</span>
+<span class="sd">                - input_names (:obj:`numpy.array`): Names of the images that form ``input`` array in correct order</span>
+<span class="sd">                - output (:obj:`numpy.array`):   Array of [num, x, y] with target images from *train* folder</span>
+<span class="sd">                - output_names (:obj:`numpy.array`): Names of the images that form ``output`` array in correct order</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            Note that returned :obj:`numpy.array` arrays are in the same format as images saved on disk. Perhaps further</span>
 <span class="sd">            scaling is necessary. Check :mod:`preparedataset` description.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">imgs_train</span><span class="p">,</span> <span class="n">imgs_mask_train</span><span class="p">,</span> <span class="n">imgs_names</span><span class="p">,</span> <span class="n">mask_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loadDatasets</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">in_train_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_train_name</span><span class="p">)</span>
+        <span class="n">TrainData</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;TrainData&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">,</span> <span class="s1">&#39;input_names&#39;</span><span class="p">,</span> <span class="s1">&#39;output_names&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">TrainData</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="n">imgs_train</span><span class="p">,</span> <span class="n">input_names</span><span class="o">=</span><span class="n">imgs_names</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">imgs_mask_train</span><span class="p">,</span></div>
+                         <span class="n">output_names</span><span class="o">=</span><span class="n">mask_names</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_loadDatasets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file_name</span><span class="p">,</span> <span class="n">output_file_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load datasets created by :meth:`create_train_data` and :meth:`create_test_data`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_file_name (str):   name of input dataset (given by first prefix in :meth:`create_train_data` and</span>
+<span class="sd">                                :meth:`create_test_data`)</span>
+<span class="sd">            output_file_name (str):  name of output dataset (given by second prefix in :meth:`create_train_data` and</span>
+<span class="sd">                                :meth:`create_test_data`)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (tuple): tuple containing:</span>
+
+<span class="sd">                - input (:obj:`numpy.array`):    Array of [num, x, y] with input images from train dataset</span>
+<span class="sd">                                                 (``input_file_name``)</span>
+<span class="sd">                - output (:obj:`numpy.array`):   Array of [num, x, y] with target images from train dataset</span>
+<span class="sd">                                                 (``output_file_name``)</span>
+<span class="sd">                - input_names (:obj:list):       List of names of files that forms ``input`` array</span>
+<span class="sd">                - output_names (:obj:list):      List of names of files that forms ``output`` array</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Outputs can be :obj:None if dile is not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">imgs_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_train_name</span><span class="p">))</span>
+            <span class="n">_imgs_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">,</span> <span class="n">input_file_name</span><span class="p">))</span>
+            <span class="n">imgs_train</span> <span class="o">=</span> <span class="n">_imgs_train</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+            <span class="n">imgs_names</span> <span class="o">=</span> <span class="n">_imgs_train</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_train_name</span><span class="p">,</span> <span class="s2">&quot;not found&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">,</span> <span class="n">input_file_name</span><span class="p">,</span> <span class="s2">&quot;not found&quot;</span><span class="p">)</span>
             <span class="n">imgs_train</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">imgs_names</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">imgs_mask_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_train_name</span><span class="p">))</span>
+            <span class="n">_imgs_mask_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">,</span> <span class="n">output_file_name</span><span class="p">))</span>
+            <span class="n">imgs_mask_train</span> <span class="o">=</span> <span class="n">_imgs_mask_train</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+            <span class="n">mask_names</span> <span class="o">=</span> <span class="n">_imgs_mask_train</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_train_name</span><span class="p">,</span> <span class="s2">&quot;not found&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">,</span> <span class="n">output_file_name</span><span class="p">,</span> <span class="s2">&quot;not found&quot;</span><span class="p">)</span>
             <span class="n">imgs_mask_train</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">imgs_train</span><span class="p">,</span> <span class="n">imgs_mask_train</span></div>
+            <span class="n">mask_names</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">imgs_train</span><span class="p">,</span> <span class="n">imgs_mask_train</span><span class="p">,</span> <span class="n">imgs_names</span><span class="p">,</span> <span class="n">mask_names</span>
 
 <div class="viewcode-block" id="PrepareDataSets.create_test_data"><a class="viewcode-back" href="../../cnntools.html#cnntools.preparedataset.PrepareDataSets.create_test_data">[docs]</a>    <span class="k">def</span> <span class="nf">create_test_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                          <span class="n">in_suffix</span><span class="p">,</span>
@@ -341,35 +377,29 @@
             <span class="k">if</span> <span class="n">imgs_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">savez_compressed</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_test_name</span><span class="p">),</span> <span class="n">data</span><span class="o">=</span><span class="n">imgs_mask</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names_out</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saving to </span><span class="si">{0}</span><span class="s1"> files done.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_test_name</span><span class="p">)))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Train data not saved - no images&quot;</span><span class="p">)</span></div>
+        <span class="k">else</span><span class="p">:</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Train data not saved - no images&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PrepareDataSets.load_test_data"><a class="viewcode-back" href="../../cnntools.html#cnntools.preparedataset.PrepareDataSets.load_test_data">[docs]</a>    <span class="k">def</span> <span class="nf">load_test_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load testing data files saved by :func:`create_test_data` function.</span>
+<span class="sd">        Load test data files saved by :func:`create_test_data` function.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (tuple): tuple containing:</span>
+<span class="sd">            (:obj:`~collections.namedtuple`): tuple containing:</span>
 
-<span class="sd">                - in_img_train (:obj:`numpy.array`):    Array of [num, x, y] with input images from *train* folder</span>
-<span class="sd">                - out_img_train (:obj:`numpy.array`):   Array of [num, x, y] with target images from *train* folder</span>
+<span class="sd">                - input (:obj:`numpy.array`):    Array of [num, x, y] with input images from *test* folder</span>
+<span class="sd">                - input_names (:obj:`numpy.array`): Names of the images that form ``input`` array in correct order</span>
+<span class="sd">                - output (:obj:`numpy.array`):   Array of [num, x, y] with target images from *test* folder</span>
+<span class="sd">                - output_names (:obj:`numpy.array`): Names of the images that form ``output`` array in correct order</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            Note that returned :obj:`numpy.array` arrays are in the same format as images saved on disk. Perhaps further</span>
 <span class="sd">            scaling is necessary. Check :mod:`preparedataset` description.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">imgs_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_test_name</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_test_name</span><span class="p">,</span> <span class="s2">&quot;not found&quot;</span><span class="p">)</span>
-            <span class="n">imgs_test</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">imgs_mask_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_test_name</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_test_name</span><span class="p">,</span> <span class="s2">&quot;not found&quot;</span><span class="p">)</span>
-            <span class="n">imgs_mask_test</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="c1"># TODO return https://stackoverflow.com/questions/354883/how-do-you-return-multiple-values-in-python</span>
-        <span class="k">return</span> <span class="n">imgs_test</span><span class="p">,</span> <span class="n">imgs_mask_test</span></div>
+        <span class="n">imgs_train</span><span class="p">,</span> <span class="n">imgs_mask_train</span><span class="p">,</span> <span class="n">imgs_names</span><span class="p">,</span> <span class="n">mask_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loadDatasets</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_test_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_test_name</span><span class="p">)</span>
+        <span class="n">TestData</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;TestData&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">,</span> <span class="s1">&#39;input_names&#39;</span><span class="p">,</span> <span class="s1">&#39;output_names&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">TestData</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="n">imgs_train</span><span class="p">,</span> <span class="n">input_names</span><span class="o">=</span><span class="n">imgs_names</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">imgs_mask_train</span><span class="p">,</span></div>
+                        <span class="n">output_names</span><span class="o">=</span><span class="n">mask_names</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PrepareDataSets.split_random"><a class="viewcode-back" href="../../cnntools.html#cnntools.preparedataset.PrepareDataSets.split_random">[docs]</a>    <span class="k">def</span> <span class="nf">split_random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                      <span class="n">in_suffix</span><span class="p">,</span>
@@ -415,8 +445,8 @@
         <span class="k">for</span> <span class="p">(</span><span class="n">ti</span><span class="p">,</span> <span class="n">to</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">training_in</span><span class="p">,</span> <span class="n">training_out</span><span class="p">):</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ti</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_path</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">to</span><span class="p">:</span>
-                <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_path</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of training and testing pairs: </span><span class="si">{0}</span><span class="s2">/</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">training_in</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">testing_in</span><span class="p">)))</span></div></div>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_path</span><span class="p">)</span></div></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of training and testing pairs: </span><span class="si">{0}</span><span class="s2">/</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">training_in</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">testing_in</span><span class="p">)))</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>

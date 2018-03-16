@@ -99,8 +99,8 @@
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">image_name</span><span class="p">):</span>
             <span class="n">subp</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="n">IJShow</span><span class="o">.</span><span class="n">ijpath</span><span class="p">,</span> <span class="n">image_name</span><span class="p">],</span>
                        <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">close_fds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Specified file &#39;</span> <span class="o">+</span> <span class="n">image_name</span> <span class="o">+</span> <span class="s2">&quot; does not exist&quot;</span><span class="p">)</span></div>
+        <span class="k">else</span><span class="p">:</span></div>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Specified file &#39;</span> <span class="o">+</span> <span class="n">image_name</span> <span class="o">+</span> <span class="s2">&quot; does not exist&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clean temporary folder.&quot;&quot;&quot;</span>
@@ -121,8 +121,8 @@
         <span class="n">imsave</span><span class="p">(</span><span class="n">image_name</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span>  <span class="c1"># save under tmp folder</span>
         <span class="n">ob</span> <span class="o">=</span> <span class="n">IJImage</span><span class="p">(</span><span class="n">image_name</span><span class="p">)</span>  <span class="c1"># create output object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ob</span><span class="p">)</span>  <span class="c1"># store in internal list FIXME not sure why yet</span>
-        <span class="n">ob</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>  <span class="c1"># show the image</span>
-        <span class="k">return</span> <span class="n">ob</span></div>
+        <span class="n">ob</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>  <span class="c1"># show the image</span></div>
+        <span class="k">return</span> <span class="n">ob</span>
 
 
 <div class="viewcode-block" id="IJImage"><a class="viewcode-back" href="../../../cnntools.ijshow.html#cnntools.ijshow.ij_frontend.IJImage">[docs]</a><span class="k">class</span> <span class="nc">IJImage</span><span class="p">:</span>
@@ -161,20 +161,20 @@
 
 <div class="viewcode-block" id="IJImage.display"><a class="viewcode-back" href="../../../cnntools.ijshow.html#cnntools.ijshow.ij_frontend.IJImage.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Show the image if it is valid.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
-            <span class="n">IJShow</span><span class="o">.</span><span class="n">runIjandShow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span></div>
+            <span class="n">IJShow</span><span class="o">.</span><span class="n">runIjandShow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="p">)</span>
 
 <div class="viewcode-block" id="IJImage.delete"><a class="viewcode-back" href="../../../cnntools.ijshow.html#cnntools.ijshow.ij_frontend.IJImage.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Delete the image and invalidate it.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">valid</span> <span class="o">-</span> <span class="kc">False</span></div>
+        <span class="sd">&quot;&quot;&quot;Delete the image and invalidate it.&quot;&quot;&quot;</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid</span> <span class="o">-</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete the image and invalidate it.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return name of file and its status.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s1">&#39;Image file </span><span class="si">{0}</span><span class="s1">, is valid = </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid</span><span class="p">)</span></div>
+        <span class="sd">&quot;&quot;&quot;Return name of file and its status.&quot;&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="s1">&#39;Image file </span><span class="si">{0}</span><span class="s1">, is valid = </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid</span><span class="p">)</span>
 </pre></div>
 
           </div>

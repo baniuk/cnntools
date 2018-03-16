@@ -91,8 +91,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">y_true_f</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span>
     <span class="n">y_pred_f</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">y_pred</span><span class="p">)</span>
-    <span class="n">intersection</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y_true_f</span> <span class="o">*</span> <span class="n">y_pred_f</span><span class="p">))</span>
-    <span class="k">return</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">intersection</span> <span class="o">+</span> <span class="n">smooth</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">y_true_f</span><span class="p">))</span> <span class="o">+</span> <span class="n">K</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">y_pred_f</span><span class="p">))</span> <span class="o">+</span> <span class="n">smooth</span><span class="p">)</span></div>
+    <span class="n">intersection</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y_true_f</span> <span class="o">*</span> <span class="n">y_pred_f</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">intersection</span> <span class="o">+</span> <span class="n">smooth</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">y_true_f</span><span class="p">))</span> <span class="o">+</span> <span class="n">K</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">y_pred_f</span><span class="p">))</span> <span class="o">+</span> <span class="n">smooth</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="dice_coef_loss"><a class="viewcode-back" href="../../cnntools.html#cnntools.binarymetrics.dice_coef_loss">[docs]</a><span class="k">def</span> <span class="nf">dice_coef_loss</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
@@ -103,8 +103,8 @@
 
 <span class="sd">    See Also:</span>
 <span class="sd">        * :func:`dice_coef`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">dice_coef</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span></div>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">dice_coef</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="mcor"><a class="viewcode-back" href="../../cnntools.html#cnntools.binarymetrics.mcor">[docs]</a><span class="k">def</span> <span class="nf">mcor</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
@@ -123,8 +123,8 @@
 
     <span class="n">numerator</span> <span class="o">=</span> <span class="p">(</span><span class="n">tp</span> <span class="o">*</span> <span class="n">tn</span> <span class="o">-</span> <span class="n">fp</span> <span class="o">*</span> <span class="n">fn</span><span class="p">)</span>
     <span class="n">denominator</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">tn</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">tn</span> <span class="o">+</span> <span class="n">fn</span><span class="p">))</span>
-
-    <span class="k">return</span> <span class="n">numerator</span> <span class="o">/</span> <span class="p">(</span><span class="n">denominator</span> <span class="o">+</span> <span class="n">K</span><span class="o">.</span><span class="n">epsilon</span><span class="p">())</span></div>
+</div>
+    <span class="k">return</span> <span class="n">numerator</span> <span class="o">/</span> <span class="p">(</span><span class="n">denominator</span> <span class="o">+</span> <span class="n">K</span><span class="o">.</span><span class="n">epsilon</span><span class="p">())</span>
 
 
 <div class="viewcode-block" id="precision"><a class="viewcode-back" href="../../cnntools.html#cnntools.binarymetrics.precision">[docs]</a><span class="k">def</span> <span class="nf">precision</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
@@ -135,8 +135,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">true_positives</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">y_true</span> <span class="o">*</span> <span class="n">y_pred</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)))</span>
     <span class="n">predicted_positives</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)))</span>
-    <span class="n">precision</span> <span class="o">=</span> <span class="n">true_positives</span> <span class="o">/</span> <span class="p">(</span><span class="n">predicted_positives</span> <span class="o">+</span> <span class="n">K</span><span class="o">.</span><span class="n">epsilon</span><span class="p">())</span>
-    <span class="k">return</span> <span class="n">precision</span></div>
+    <span class="n">precision</span> <span class="o">=</span> <span class="n">true_positives</span> <span class="o">/</span> <span class="p">(</span><span class="n">predicted_positives</span> <span class="o">+</span> <span class="n">K</span><span class="o">.</span><span class="n">epsilon</span><span class="p">())</span></div>
+    <span class="k">return</span> <span class="n">precision</span>
 
 
 <div class="viewcode-block" id="recall"><a class="viewcode-back" href="../../cnntools.html#cnntools.binarymetrics.recall">[docs]</a><span class="k">def</span> <span class="nf">recall</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
@@ -147,8 +147,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">true_positives</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">y_true</span> <span class="o">*</span> <span class="n">y_pred</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
     <span class="n">possible_positives</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
-    <span class="n">recall</span> <span class="o">=</span> <span class="n">true_positives</span> <span class="o">/</span> <span class="p">(</span><span class="n">possible_positives</span> <span class="o">+</span> <span class="n">K</span><span class="o">.</span><span class="n">epsilon</span><span class="p">())</span>
-    <span class="k">return</span> <span class="n">recall</span></div>
+    <span class="n">recall</span> <span class="o">=</span> <span class="n">true_positives</span> <span class="o">/</span> <span class="p">(</span><span class="n">possible_positives</span> <span class="o">+</span> <span class="n">K</span><span class="o">.</span><span class="n">epsilon</span><span class="p">())</span></div>
+    <span class="k">return</span> <span class="n">recall</span>
 
 
 <div class="viewcode-block" id="f1"><a class="viewcode-back" href="../../cnntools.html#cnntools.binarymetrics.f1">[docs]</a><span class="k">def</span> <span class="nf">f1</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
@@ -179,8 +179,8 @@
         <span class="n">precision</span> <span class="o">=</span> <span class="n">true_positives</span> <span class="o">/</span> <span class="p">(</span><span class="n">predicted_positives</span> <span class="o">+</span> <span class="n">K</span><span class="o">.</span><span class="n">epsilon</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">precision</span>
     <span class="n">precision</span> <span class="o">=</span> <span class="n">precision</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-    <span class="n">recall</span> <span class="o">=</span> <span class="n">recall</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">((</span><span class="n">precision</span> <span class="o">*</span> <span class="n">recall</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">precision</span> <span class="o">+</span> <span class="n">recall</span><span class="p">))</span></div>
+    <span class="n">recall</span> <span class="o">=</span> <span class="n">recall</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">((</span><span class="n">precision</span> <span class="o">*</span> <span class="n">recall</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">precision</span> <span class="o">+</span> <span class="n">recall</span><span class="p">))</span>
 </pre></div>
 
           </div>

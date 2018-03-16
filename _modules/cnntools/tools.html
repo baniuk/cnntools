@@ -57,8 +57,8 @@
     <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>  <span class="c1"># mean for data centering</span>
     <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>  <span class="c1"># std for data normalization</span>
     <span class="n">image</span> <span class="o">-=</span> <span class="n">mean</span>
-    <span class="n">image</span> <span class="o">/=</span> <span class="n">std</span>
-    <span class="k">return</span> <span class="n">image</span></div>
+    <span class="n">image</span> <span class="o">/=</span> <span class="n">std</span></div>
+    <span class="k">return</span> <span class="n">image</span>
 
 
 <div class="viewcode-block" id="normEach"><a class="viewcode-back" href="../../cnntools.html#cnntools.tools.normEach">[docs]</a><span class="k">def</span> <span class="nf">normEach</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
@@ -75,16 +75,16 @@
     <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>  <span class="c1"># mean for each slice data centering</span>
     <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>  <span class="c1"># std for data normalization</span>
     <span class="n">image</span> <span class="o">-=</span> <span class="n">mean</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>  <span class="c1"># create array [case,1,1]</span>
-    <span class="n">image</span> <span class="o">/=</span> <span class="n">std</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">image</span></div>
+    <span class="n">image</span> <span class="o">/=</span> <span class="n">std</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">image</span>
 
 
 <div class="viewcode-block" id="norm01"><a class="viewcode-back" href="../../cnntools.html#cnntools.tools.norm01">[docs]</a><span class="k">def</span> <span class="nf">norm01</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Normalise to range 01.&quot;&quot;&quot;</span>
     <span class="n">mi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">data</span> <span class="o">-</span> <span class="n">mi</span>
-    <span class="n">ret</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ret</span></div>
+    <span class="n">ret</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ret</span>
 
 
 <div class="viewcode-block" id="asRgbImage"><a class="viewcode-back" href="../../cnntools.html#cnntools.tools.asRgbImage">[docs]</a><span class="k">def</span> <span class="nf">asRgbImage</span><span class="p">(</span><span class="n">red</span><span class="p">,</span> <span class="n">blue</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">green</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -110,8 +110,8 @@
     <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">red</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="p">(</span><span class="mi">3</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
     <span class="n">ret</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">red8</span>
     <span class="n">ret</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">green8</span>
-    <span class="n">ret</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">blue8</span>
-    <span class="k">return</span> <span class="n">ret</span></div>
+    <span class="n">ret</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">blue8</span></div>
+    <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 
           </div>
